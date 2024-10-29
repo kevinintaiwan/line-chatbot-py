@@ -9,6 +9,9 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 
+# Dictionary to store user selections
+user_selections = {}
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -20,33 +23,29 @@ def callback():
         abort(400)
     return 'OK'
 
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    user_id = event.source.user_id
     user_input = event.message.text.strip()
-    
+
     # Step 1: Initial instructions for drug selection
     if user_input == "1":
-        message = TextSendMessage(
-            text="輸入a表示膀胱出血、血尿"
-        )
+        user_selections[user_id] = "1"
+        message = TextSendMessage(text="輸入a表示膀胱出血、血尿")
     elif user_input == "2":
-        message = TextSendMessage(
-            text="輸入a表示心臟功能異常"
-        )
+        user_selections[user_id] = "2"
+        message = TextSendMessage(text="輸入a表示心臟功能異常")
     elif user_input == "3":
-        message = TextSendMessage(
-            text="輸入a表示神經肌肉症狀"
-        )
+        user_selections[user_id] = "3"
+        message = TextSendMessage(text="輸入a表示神經肌肉症狀")
     elif user_input == "4":
-        message = TextSendMessage(
-            text="輸入a表示口腔、喉嚨痛"
-        )
-    
-    # Step 2: Detailed information based on selection
-    elif user_input == "a" and event.source.user_id in previous_selections:
-        previous_selection = previous_selections[event.source.user_id]
-        
+        user_selections[user_id] = "4"
+        message = TextSendMessage(text="輸入a表示口腔、喉嚨痛")
+
+    # Step 2: Detailed information based on 'a' selection
+    elif user_input == "a":
+        previous_selection = user_selections.get(user_id)
+
         if previous_selection == "1":
             message = TextSendMessage(
                 text="藥物的代謝物排泄至尿液後會引起泌尿道，尤其是膀胱的改變，若出現出血性膀胱炎或血尿等現象，請立即回診就醫\n\n"
@@ -64,7 +63,9 @@ def handle_message(event):
             message = TextSendMessage(
                 text="藥物可能導致口腔、喉嚨痛，若出現此症狀請告知醫護人員，並且避免食用刺激口腔和喉嚨的食物，盡量多喝水"
             )
-    
+        else:
+            message = TextSendMessage(text="請先選擇藥物，然後再輸入a。")
+
     # Default instructions if input doesn't match any above
     else:
         message = TextSendMessage(
