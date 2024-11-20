@@ -50,6 +50,13 @@ def handle_message(event):
             message = TextSendMessage(
                 text="藥物的代謝物排泄至尿液後會引起泌尿道，尤其是膀胱的改變，若出現出血性膀胱炎或血尿等現象，請立即回診就醫\n\n"
                      "平時請喝大量開水，並時常排尿，若醫師無特殊指示，建議於晨間服用，降低對膀胱之副作用"
+                emojis=[
+                    {
+                        "index": 10,  # 插入位置，對應到「喝大量開水」中的「水」之後
+                        "productId": "5ac21e6c040ab15980c9b444",
+                        "emojiId": "104"
+                    }
+                ]
             )
         elif previous_selection == "2":
             message = TextSendMessage(
