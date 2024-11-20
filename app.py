@@ -18,32 +18,24 @@ DRUG_INFO = {
     "1": {
         "name": "Cyclophosphamide",
         "prompt": "輸入a表示膀胱出血、血尿",
-        "detail_text": "藥物的代謝物排泄至尿液後會引起泌尿道，尤其是膀胱的改變，若出現出血性膀胱炎或血尿等現象，請立即回診就醫\n\n"
-                      "平時請喝大量開水，並時常排尿，若醫師無特殊指示，建議於晨間服用，降低對膀胱之副作用",
-        "emojis": [{
-            "index": 71,
-            "productId": "5ac21e6c040ab15980c9b444",
-            "emojiId": "104"
-        }]
+        "detail": "藥物的代謝物排泄至尿液後會引起泌尿道，尤其是膀胱的改變，若出現出血性膀胱炎或血尿等現象，請立即回診就醫\n\n"
+                 "平時請喝大量開水，並時常排尿，若醫師無特殊指示，建議於晨間服用，降低對膀胱之副作用"
     },
     "2": {
         "name": "Doxorubicin",
         "prompt": "輸入a表示心臟功能異常",
-        "detail_text": "若出現相關症狀，如：胸悶疼痛、呼吸困難、眩暈、心律改變等，請立即就醫，且每三個月需監測心臟功能",
-        "emojis": []
+        "detail": "若出現相關症狀，如：胸悶疼痛、呼吸困難、眩暈、心律改變等，請立即就醫，且每三個月需監測心臟功能"
     },
     "3": {
         "name": "Vincristine",
         "prompt": "輸入a表示神經肌肉症狀",
-        "detail_text": "神經肌肉症狀：包括神經痛、四肢痛、麻木感、肌肉痛、步行困難、知覺異常、運動失調等，孩童最容易感受此副作用，"
-                      "通常一般在治療後 6 週消失，但偶爾會有停止治療後仍持續一段長期間之情形。",
-        "emojis": []
+        "detail": "神經肌肉症狀：包括神經痛、四肢痛、麻木感、肌肉痛、步行困難、知覺異常、運動失調等，孩童最容易感受此副作用，"
+                 "通常一般在治療後 6 週消失，但偶爾會有停止治療後仍持續一段長期間之情形。"
     },
     "4": {
         "name": "Prednisolone",
         "prompt": "輸入a表示口腔、喉嚨痛",
-        "detail_text": "藥物可能導致口腔、喉嚨痛，若出現此症狀請告知醫護人員，並且避免食用刺激口腔和喉嚨的食物，盡量多喝水",
-        "emojis": []
+        "detail": "藥物可能導致口腔、喉嚨痛，若出現此症狀請告知醫護人員，並且避免食用刺激口腔和喉嚨的食物，盡量多喝水"
     }
 }
 
@@ -55,13 +47,6 @@ def get_default_message():
              "3. Vincristine\n"
              "4. Prednisolone\n\n"
              "我將為您解析該藥物之副作用與注意事項"
-    )
-
-def get_drug_detail_message(drug_info):
-    """建立藥物詳細資訊的 TextSendMessage"""
-    return TextSendMessage(
-        text=drug_info["detail_text"],
-        emojis=drug_info["emojis"]
     )
 
 @app.route("/callback", methods=['POST'])
@@ -100,7 +85,7 @@ def handle_message(event):
         if user_state and user_state["step"] == "awaiting_a":
             # 確認選擇的藥物並返回詳細資訊
             drug_number = user_state["selection"]
-            message = get_drug_detail_message(DRUG_INFO[drug_number])
+            message = TextSendMessage(text=DRUG_INFO[drug_number]["detail"])
             
             # 清除使用者狀態，讓用戶可以重新選擇藥物
             user_states[user_id] = {
