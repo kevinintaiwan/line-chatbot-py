@@ -24,8 +24,8 @@ DRUG_INFO = {
             emojis=[
                 {
                     "index": 71,  # 對應到「喝大量開水」後的位置
-                    "productId": "5ac21e6c040ab15980c9b444",
-                    "emojiId": "104"
+                    "productId": "5ac2213e040ab15980c9b447",
+                    "emojiId": "001"
                 }
             ]
         )
